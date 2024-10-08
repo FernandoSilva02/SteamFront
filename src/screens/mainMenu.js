@@ -1,36 +1,66 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { View, StyleSheet, Image, Text, ScrollView } from "react-native";
 
+// Componente para etiquetas
 const Tag = ({ children }) => (
   <View style={styles.tag}>
     <Text style={styles.tagText}>{children}</Text>
   </View>
 );
 
-const GameItem = ({ imageUri, name, platforms, price }) => (
+// Componente de cada juego
+const GameItem = ({ imageUri, name, price }) => (
   <View style={styles.gameItemContainer}>
     <View style={styles.gameInfo}>
       <Image source={{ uri: imageUri }} style={styles.gameItemImage} />
       <View style={styles.gameItemTextContainer}>
         <Text style={styles.gameItemName}>{name}</Text>
-        <View style={styles.platformContainer}>
-          {platforms.map((platform, index) => (
-            <View key={index} style={styles.platformItem}>
-              <Image
-                source={{ uri: platform.iconUri }}
-                style={styles.platformIcon}
-              />
-              <Text style={styles.platformText}>{platform.name}</Text>
-            </View>
-          ))}
-        </View>
       </View>
     </View>
     <Text style={styles.priceText}>{price}</Text>
   </View>
 );
 
+// Función para el menú principal
 function MainMenu() {
+  const [games, setGames] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  // Token de autenticación (reemplaza con tu token real)
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjM5OGQ4N2QxMWUzN2ZiOTFlOTQ2NyIsImlhdCI6MTcyNzQxNTk5MiwiZXhwIjoxNzMwMDA3OTkyfQ.P3yWts0Tay9YaSfQlmeccQG-PTzP5F0qWGR5YXmPKbY";
+
+  // useEffect para obtener los datos de la API de juegos
+  useEffect(() => {
+    fetch("http://192.168.1.106:3000/api/games/")
+      .then((response) => response.json())
+      .then((data) => setGames(data))
+      .catch((error) => console.error("Error fetching games:", error));
+  }, []);
+
+  // useEffect para obtener las categorías de la API
+  useEffect(() => {
+    fetch("http://192.168.1.106:3000/api/categories/", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setCategories(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching categories:", error);
+      });
+  }, []);
+
   return (
     <View style={styles.container}>
       <Image
@@ -40,84 +70,29 @@ function MainMenu() {
         style={styles.headerImage}
       />
       <View style={styles.tagsContainer}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <ScrollView style={styles.scrollView} horizontal={true} showsHorizontalScrollIndicator={false}>
           <View style={styles.tagList}>
-            <Tag>Aventura</Tag>
-            <Tag>Plataformas</Tag>
-            <Tag>Carreras</Tag>
-            <Tag>Metroidvania</Tag>
+            {categories.map((category, index) => (
+              <Tag key={index}>{category.category_name}</Tag>
+            ))}
           </View>
         </ScrollView>
         <View style={styles.gameList}>
-          <GameItem
-            imageUri="https://cdn.builder.io/api/v1/image/assets/TEMP/22837f66800e6ff303ce894556bac5f33beeaef8db1021929c3e031098540188?placeholderIfAbsent=true&apiKey=79fcc6ae448041eb9992e7b04c216d13"
-            name="ANIMAL WELL"
-            price="$59.000"
-            platforms={[
-              {
-                name: "Windows",
-                iconUri: "https://cdn.builder.io/api/v1/image/assets/TEMP/cea3f8de21ef73703b06cfe8ced2138ffde082512b31c9872d4a8861aa969a0c?placeholderIfAbsent=true&apiKey=79fcc6ae448041eb9992e7b04c216d13",
-              },
-            ]}
-          />
-          <GameItem
-            imageUri="https://cdn.builder.io/api/v1/image/assets/TEMP/504d1dba8e8189ee5a53cff02b4879c592272790e8a7005c14dcbd3485db325c?placeholderIfAbsent=true&apiKey=79fcc6ae448041eb9992e7b04c216d13"
-            name="Super Mario Bros. 3"
-            price="$20.000"
-            platforms={[
-              {
-                name: "Windows",
-                iconUri: "https://cdn.builder.io/api/v1/image/assets/TEMP/cea3f8de21ef73703b06cfe8ced2138ffde082512b31c9872d4a8861aa969a0c?placeholderIfAbsent=true&apiKey=79fcc6ae448041eb9992e7b04c216d13",
-              },
-            ]}
-          />
-          <GameItem
-              imageUri="https://cdn.builder.io/api/v1/image/assets/TEMP/158b0098e74e372ef6b048083f637f62b91bbd632bb77be476af3ab3609b936e?placeholderIfAbsent=true&apiKey=79fcc6ae448041eb9992e7b04c216d13"
-              name="Bad Piggies"
-              price="$5.000"
-              platforms={[
-                {
-                  name: "Windows",
-                  iconUri:
-                    "https://cdn.builder.io/api/v1/image/assets/TEMP/b54ac0f3f37a7e80a619f98450a4920741e997b96e4b288447828b71b978a855?placeholderIfAbsent=true&apiKey=79fcc6ae448041eb9992e7b04c216d13",
-                },
-                {
-                  name: "Mac",
-                  iconUri:
-                    "https://cdn.builder.io/api/v1/image/assets/TEMP/8ba989bdace9e0ff43a748b510ce7d4e0b6f96390c61d5b01fa0f05a7d9a960a?placeholderIfAbsent=true&apiKey=79fcc6ae448041eb9992e7b04c216d13",
-                },
-              ]}
-            />
+          {games.map((game, index) => (
             <GameItem
-              imageUri="https://cdn.builder.io/api/v1/image/assets/TEMP/ba2cf4c0b22e91deab5a908b834df2158b94a52863e2e41d3c32589fe2bef0aa?placeholderIfAbsent=true&apiKey=79fcc6ae448041eb9992e7b04c216d13"
-              name="TLOZ: Ocarina of Time"
-              price="$25.000"
-              platforms={[
-                {
-                  name: "Windows",
-                  iconUri:
-                    "https://cdn.builder.io/api/v1/image/assets/TEMP/cea3f8de21ef73703b06cfe8ced2138ffde082512b31c9872d4a8861aa969a0c?placeholderIfAbsent=true&apiKey=79fcc6ae448041eb9992e7b04c216d13",
-                },
-              ]}
+              key={game._id}
+              imageUri={game.photos[0]}
+              name={game.game_name}
+              price={`$${Number(game.price).toLocaleString('es-ES')}`}
             />
-            <GameItem
-              imageUri="https://cdn.builder.io/api/v1/image/assets/TEMP/a54f9f092e078992eacf64d495d4867cf1dfbba0628c09039f52e6619d586898?placeholderIfAbsent=true&apiKey=79fcc6ae448041eb9992e7b04c216d13"
-              name="Super Mario Kart"
-              price="$5.000"
-              platforms={[
-                {
-                  name: "Windows",
-                  iconUri:
-                    "https://cdn.builder.io/api/v1/image/assets/TEMP/cea3f8de21ef73703b06cfe8ced2138ffde082512b31c9872d4a8861aa969a0c?placeholderIfAbsent=true&apiKey=79fcc6ae448041eb9992e7b04c216d13",
-                },
-              ]}
-            />
-          </View>
+          ))}
+        </View>
       </View>
     </View>
   );
 }
 
+// Estilos
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -132,35 +107,47 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 20,
   },
+  scrollView: {
+    marginVertical: 0,
+    paddingVertical: 0,
+  },
   tagsContainer: {
-    marginBottom: 770, // Reducir el espacio entre el contenedor de tags y la lista de juegos
+    height: 150,
+    paddingVertical: 0,
   },
   tagList: {
     flexDirection: 'row',
-    alignItems: 'baseline', // Centrar verticalmente los tags
+    alignItems: 'center',
+    paddingVertical: 0,
   },
-  tag: { // Campo de las etiquetas
+  tag: {
     alignItems: 'center',
     backgroundColor: '#303649',
-    paddingVertical: 4, // Reducido para un tamaño más compacto
-    paddingHorizontal: 10, // Reducido para un tamaño más compacto
-    borderRadius: 8,
-    marginRight: 8,
-    minWidth: 100, // Definir un ancho mínimo
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    marginRight: 10,
+    minWidth: 100,
   },
-  tagText: { // Texto de las etiquetas
+  tagText: {
     color: '#FFF',
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: 16,
   },
   gameList: {
     flex: 1,
+    marginTop: 10,
+    paddingVertical: 0,
   },
   gameItemContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#243447',
+    borderRadius: 10,
   },
   gameInfo: {
     flexDirection: 'row',
@@ -177,33 +164,23 @@ const styles = StyleSheet.create({
   },
   gameItemName: {
     color: '#FFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  platformContainer: {
-    flexDirection: 'row',
-    marginTop: 4,
-  },
-  platformItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 8,
-  },
-  platformIcon: {
-    width: 14,
-    height: 14,
-    resizeMode: 'contain',
-  },
-  platformText: {
-    color: '#7B8D9D',
-    marginLeft: 4,
-    fontSize: 14,
-    fontWeight: '300',
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 4,
   },
   priceText: {
     color: '#FFF',
     fontSize: 18,
     fontWeight: '300',
+  },
+  platformContainer: {
+    flexDirection: 'row',
+    marginTop: 4,
+  },
+  platformIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 8,
   },
 });
 
