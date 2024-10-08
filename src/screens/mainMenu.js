@@ -13,9 +13,12 @@ const Tag = ({ children, onPress, isSelected }) => (
 const GameItem = ({ imageUri, name, price }) => (
   <View style={styles.gameItemContainer}>
     <View style={styles.gameInfo}>
-      <Image source={{ uri: imageUri }} style={styles.gameItemImage} />
+      <View style={styles.imageContainer}>
+        <Image source={{ uri: imageUri }} style={styles.gameItemImage} />
+      </View>
       <View style={styles.gameItemTextContainer}>
         <Text style={styles.gameItemName}>{name}</Text>
+        <Text style={styles.platformText}>Windows</Text>
       </View>
     </View>
     <Text style={styles.priceText}>{price}</Text>
@@ -26,9 +29,9 @@ const GameItem = ({ imageUri, name, price }) => (
 function MainMenu() {
   const [games, setGames] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null); // Solo una categoría seleccionada
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
-  // Token de autenticación (reemplaza con tu token real)
+  // Token de autenticación
   const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjM5OGQ4N2QxMWUzN2ZiOTFlOTQ2NyIsImlhdCI6MTcyNzQxNTk5MiwiZXhwIjoxNzMwMDA3OTkyfQ.P3yWts0Tay9YaSfQlmeccQG-PTzP5F0qWGR5YXmPKbY";
 
   // useEffect para obtener los juegos filtrados por categoría
@@ -64,14 +67,13 @@ function MainMenu() {
   }, []);
 
   const toggleCategory = (categoryId) => {
-    // Si se selecciona la misma categoría, se deselecciona
     setSelectedCategory(prevSelected => (prevSelected === categoryId ? null : categoryId));
   };
 
   return (
     <View style={styles.container}>
       <Image
-        source={require('../assets/steamLogo.png')} // Cambia la ruta según la ubicación de tu imagen
+        source={require('../assets/steamLogo.png')}
         style={styles.headerImage}
       />
       <View style={styles.tagsContainer}>
@@ -81,7 +83,7 @@ function MainMenu() {
               <Tag 
                 key={index} 
                 onPress={() => toggleCategory(category._id)} 
-                isSelected={selectedCategory === category._id} // Verifica si es la categoría seleccionada
+                isSelected={selectedCategory === category._id}
               >
                 {category.category_name}
               </Tag>
@@ -167,11 +169,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  gameItemImage: {
+  imageContainer: {
     width: 72,
     height: 50,
-    resizeMode: 'contain',
+    borderRadius: 8,
+    overflow: 'hidden',
     marginRight: 16,
+  },
+  gameItemImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
   gameItemTextContainer: {
     flexDirection: 'column',
@@ -181,6 +189,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     marginBottom: 4,
+  },
+  platformText: {
+    color: '#7B8D9D',
+    fontSize: 14,
   },
   priceText: {
     color: '#FFF',
