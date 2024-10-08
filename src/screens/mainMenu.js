@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { View, StyleSheet, Image, Text, ScrollView } from "react-native";
 
 // Componente para etiquetas
-const Tag = ({ children }) => (
-  <View style={styles.tag}>
+const Tag = ({ children, onPress, isSelected }) => (
+  <View style={[styles.tag, isSelected && styles.tagSelected]} onTouchEnd={onPress}>
     <Text style={styles.tagText}>{children}</Text>
   </View>
 );
@@ -26,17 +26,19 @@ const GameItem = ({ imageUri, name, price }) => (
 function MainMenu() {
   const [games, setGames] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null); // Solo una categoría seleccionada
 
   // Token de autenticación (reemplaza con tu token real)
   const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjM5OGQ4N2QxMWUzN2ZiOTFlOTQ2NyIsImlhdCI6MTcyNzQxNTk5MiwiZXhwIjoxNzMwMDA3OTkyfQ.P3yWts0Tay9YaSfQlmeccQG-PTzP5F0qWGR5YXmPKbY";
 
-  // useEffect para obtener los datos de la API de juegos
+  // useEffect para obtener los juegos filtrados por categoría
   useEffect(() => {
-    fetch("http://192.168.1.106:3000/api/games/")
+    const categoryQuery = selectedCategory ? `?category=${selectedCategory}` : '';
+    fetch(`http://192.168.1.106:3000/api/games/${categoryQuery}`)
       .then((response) => response.json())
       .then((data) => setGames(data))
       .catch((error) => console.error("Error fetching games:", error));
-  }, []);
+  }, [selectedCategory]);
 
   // useEffect para obtener las categorías de la API
   useEffect(() => {
@@ -61,19 +63,28 @@ function MainMenu() {
       });
   }, []);
 
+  const toggleCategory = (categoryId) => {
+    // Si se selecciona la misma categoría, se deselecciona
+    setSelectedCategory(prevSelected => (prevSelected === categoryId ? null : categoryId));
+  };
+
   return (
     <View style={styles.container}>
       <Image
-        source={{
-          uri: "https://cdn.builder.io/api/v1/image/assets/TEMP/97d4b2a2fccc7a2ba7ff9e2f273076e13ad902a0be7044ac0e627ee6a44691f5?placeholderIfAbsent=true&apiKey=79fcc6ae448041eb9992e7b04c216d13",
-        }}
+        source={require('../assets/steamLogo.png')} // Cambia la ruta según la ubicación de tu imagen
         style={styles.headerImage}
       />
       <View style={styles.tagsContainer}>
         <ScrollView style={styles.scrollView} horizontal={true} showsHorizontalScrollIndicator={false}>
           <View style={styles.tagList}>
             {categories.map((category, index) => (
-              <Tag key={index}>{category.category_name}</Tag>
+              <Tag 
+                key={index} 
+                onPress={() => toggleCategory(category._id)} 
+                isSelected={selectedCategory === category._id} // Verifica si es la categoría seleccionada
+              >
+                {category.category_name}
+              </Tag>
             ))}
           </View>
         </ScrollView>
@@ -129,6 +140,9 @@ const styles = StyleSheet.create({
     marginRight: 10,
     minWidth: 100,
   },
+  tagSelected: {
+    backgroundColor: '#31BCFC',
+  },
   tagText: {
     color: '#FFF',
     fontWeight: '600',
@@ -172,15 +186,6 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 18,
     fontWeight: '300',
-  },
-  platformContainer: {
-    flexDirection: 'row',
-    marginTop: 4,
-  },
-  platformIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 8,
   },
 });
 
