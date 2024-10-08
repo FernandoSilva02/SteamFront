@@ -5,7 +5,6 @@ import MainMenu from './src/screens/mainMenu';
 export default function App() {
   return (
     <View style={styles.container}>
-      {/* Aquí puedes usar MyComponent */}
       <MainMenu />
       <StatusBar style="auto" />
     </View>
