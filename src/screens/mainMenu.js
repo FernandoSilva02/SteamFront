@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { View, StyleSheet, Image, Text, ScrollView } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 
 // Componente para etiquetas
 const Tag = ({ children, onPress, isSelected }) => (
@@ -10,20 +11,25 @@ const Tag = ({ children, onPress, isSelected }) => (
 );
 
 // Componente de cada juego
-const GameItem = ({ imageUri, name, price }) => (
-  <View style={styles.gameItemContainer}>
-    <View style={styles.gameInfo}>
-      <View style={styles.imageContainer}>
-        <Image source={{ uri: imageUri }} style={styles.gameItemImage} />
+const GameItem = ({ imageUri, name, price, game }) => {
+  const navigation = useNavigation(); 
+
+  return (
+    <View style={styles.gameItemContainer} onTouchEnd={() => navigation.navigate('GameInfo', { game })}>
+      <View style={styles.gameInfo}>
+        <View style={styles.imageContainer}>
+          <Image source={{ uri: imageUri }} style={styles.gameItemImage} />
+        </View>
+        <View style={styles.gameItemTextContainer}>
+          <Text style={styles.gameItemName}>{name}</Text>
+          <Text style={styles.platformText}>Windows</Text>
+        </View>
       </View>
-      <View style={styles.gameItemTextContainer}>
-        <Text style={styles.gameItemName}>{name}</Text>
-        <Text style={styles.platformText}>Windows</Text>
-      </View>
+      <Text style={styles.priceText}>{price}</Text>
     </View>
-    <Text style={styles.priceText}>{price}</Text>
-  </View>
-);
+  );
+};
+
 
 // Función para el menú principal
 function MainMenu() {
@@ -39,9 +45,13 @@ function MainMenu() {
     const categoryQuery = selectedCategory ? `?category=${selectedCategory}` : '';
     fetch(`http://192.168.1.106:3000/api/games/${categoryQuery}`)
       .then((response) => response.json())
-      .then((data) => setGames(data))
+      .then((data) => {
+        console.log('Games fetched:', data);
+        setGames(data);
+      })
       .catch((error) => console.error("Error fetching games:", error));
   }, [selectedCategory]);
+  
 
   // useEffect para obtener las categorías de la API
   useEffect(() => {
@@ -74,10 +84,10 @@ function MainMenu() {
     <View style={styles.container}>
       <Image
         source={require('../assets/steamLogo.png')}
-        style={styles.headerImage}
+        style={styles.steamLogo}
       />
       <View style={styles.tagsContainer}>
-        <ScrollView style={styles.scrollView} horizontal={true} showsHorizontalScrollIndicator={false}>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <View style={styles.tagList}>
             {categories.map((category, index) => (
               <Tag 
@@ -91,14 +101,16 @@ function MainMenu() {
           </View>
         </ScrollView>
         <View style={styles.gameList}>
-          {games.map((game, index) => (
-            <GameItem
-              key={game._id}
-              imageUri={game.photos[0]}
-              name={game.game_name}
-              price={`$${Number(game.price).toLocaleString('es-ES')}`}
-            />
-          ))}
+        {games.map((game, index) => (
+  <GameItem
+    key={game._id}
+    imageUri={game.photos[0]}
+    name={game.game_name}
+    price={`$${Number(game.price).toLocaleString('es-ES')}`}
+    game={game}  // Pasar el objeto completo aquí
+  />
+))}
+
         </View>
       </View>
     </View>
@@ -113,16 +125,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 40,
   },
-  headerImage: {
+  steamLogo: {
     width: 150,
     height: 50,
     resizeMode: 'contain',
     alignSelf: 'center',
     marginBottom: 20,
-  },
-  scrollView: {
-    marginVertical: 0,
-    paddingVertical: 0,
   },
   tagsContainer: {
     height: 150,
