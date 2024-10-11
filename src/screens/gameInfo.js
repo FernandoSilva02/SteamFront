@@ -63,11 +63,14 @@ const GameInfo = ({ route }) => {
 
       {/* Botón de compra */}
       <View style={gameInfoStyles.buySection}>
-        <Text style={gameInfoStyles.priceBox}>
+        <Text style={generalStyles.secundaryTitleText}>
+          Comprar {game.game_name.toUpperCase()}
+        </Text>
+        <Text style={generalStyles.formText}>
           {`$${(game.price / 1000).toFixed(3)}`}
         </Text>
         <TouchableOpacity style={gameInfoStyles.addToCartButton}>
-          <Text style={gameInfoStyles.addToCartText}>Añadir al carro</Text>
+          <Text style={generalStyles.ButtonText}>Añadir al carro</Text>
         </TouchableOpacity>
       </View>
 
