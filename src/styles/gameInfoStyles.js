@@ -44,12 +44,6 @@ const gameInfoStyles = StyleSheet.create({
     borderRadius: 5,
     marginRight: 10,
   },
-  addToCartButton: {
-    backgroundColor: '#77B322',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
   osIcon: {
     width: 20, // Ajusta el tamaño según sea necesario
     height: 20,
