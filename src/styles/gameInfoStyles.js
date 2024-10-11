@@ -39,16 +39,13 @@ const gameInfoStyles = StyleSheet.create({
   },
   priceBox: {
     backgroundColor: '#000',
-    color: '#FFF',
     paddingVertical: 5,
     paddingHorizontal: 10,
-    fontSize: 18,
-    fontWeight: '600',
     borderRadius: 5,
     marginRight: 10,
   },
   addToCartButton: {
-    backgroundColor: '#28A745',
+    backgroundColor: '#77B322',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,

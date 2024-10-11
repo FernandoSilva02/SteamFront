@@ -68,14 +68,16 @@ const GameInfo = ({ route }) => {
             Comprar {game.game_name.toUpperCase()}
           </Text>
           <Image
-            source={require('../assets/windows.png')} // Asegúrate de tener el icono de Windows en tu carpeta de assets
+            source={require('../assets/windows.png')}
             style={gameInfoStyles.osIcon}
           />
         </View>
         <View style={gameInfoStyles.priceAndCart}>
-          <Text style={gameInfoStyles.priceBox}>
-            {`$${(game.price / 1000).toFixed(3)}`}
-          </Text>
+          <View style={gameInfoStyles.priceBox}>
+            <Text style={generalStyles.priceText}>
+              {`$${(game.price / 1000).toFixed(3)}`}
+            </Text>
+          </View>
           <TouchableOpacity style={gameInfoStyles.addToCartButton}>
             <Text style={generalStyles.ButtonText}>Añadir al carro</Text>
           </TouchableOpacity>
