@@ -47,6 +47,13 @@ const generalStyles = StyleSheet.create({
     color: '#FFF',
     fontWeight: '300',
   },
+  smallButton: {
+    //Botón para añadir al carro y guardar usuario
+    backgroundColor: '#77B322',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
 });
 
 export default generalStyles;
