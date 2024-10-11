@@ -78,7 +78,7 @@ const GameInfo = ({ route }) => {
               {`$${(game.price / 1000).toFixed(3)}`}
             </Text>
           </View>
-          <TouchableOpacity style={gameInfoStyles.addToCartButton}>
+          <TouchableOpacity style={generalStyles.smallButton}>
             <Text style={generalStyles.ButtonText}>Añadir al carro</Text>
           </TouchableOpacity>
         </View>
