@@ -1,5 +1,4 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
 import MainMenu from './src/screens/mainMenu';
 import GameInfo from './src/screens/gameInfo';
 import { NavigationContainer } from '@react-navigation/native';
@@ -11,15 +10,15 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="MainMenu">
-        <Stack.Screen 
-          name="MainMenu" 
-          component={MainMenu} 
-          options={{ title: 'Main Menu', headerShown: false }} // Ocultar el header si no es necesario
+        <Stack.Screen
+          name="MainMenu"
+          component={MainMenu}
+          options={{ title: 'Main Menu', headerShown: false }}
         />
-        <Stack.Screen 
-          name="GameInfo" 
-          component={GameInfo} 
-          options={{ title: 'Game Info' }} 
+        <Stack.Screen
+          name="GameInfo"
+          component={GameInfo}
+          options={{ title: 'Game Info', headerShown: false }}
         />
       </Stack.Navigator>
       <StatusBar style="auto" />
