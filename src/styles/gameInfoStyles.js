@@ -21,17 +21,21 @@ const gameInfoStyles = StyleSheet.create({
     marginRight: 10,
   },
   buySection: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#1A2A3D',
+    backgroundColor: '#576674',
     padding: 10,
     borderRadius: 5,
     marginBottom: 20,
   },
+  titleAndIcon: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10, // Espacio entre el título y la segunda fila
+  },
   priceAndCart: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-end', // Alinear el contenido a la derecha
   },
   priceBox: {
     backgroundColor: '#000',
@@ -48,6 +52,11 @@ const gameInfoStyles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
+  },
+  osIcon: {
+    width: 20, // Ajusta el tamaño según sea necesario
+    height: 20,
+    marginLeft: 10, // Espacio entre el texto y el icono
   },
   systemRequirements: {
     backgroundColor: '#243447',
