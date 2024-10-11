@@ -66,12 +66,14 @@ const GameInfo = ({ route }) => {
         <Text style={generalStyles.secundaryTitleText}>
           Comprar {game.game_name.toUpperCase()}
         </Text>
-        <Text style={generalStyles.formText}>
-          {`$${(game.price / 1000).toFixed(3)}`}
-        </Text>
-        <TouchableOpacity style={gameInfoStyles.addToCartButton}>
-          <Text style={generalStyles.ButtonText}>Añadir al carro</Text>
-        </TouchableOpacity>
+        <View style={gameInfoStyles.priceAndCart}>
+          <Text style={generalStyles.formText}>
+            {`$${(game.price / 1000).toFixed(3)}`}
+          </Text>
+          <TouchableOpacity style={gameInfoStyles.addToCartButton}>
+            <Text style={generalStyles.ButtonText}>Añadir al carro</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Requisitos del sistema */}

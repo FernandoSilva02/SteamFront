@@ -29,6 +29,10 @@ const gameInfoStyles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 20,
   },
+  priceAndCart: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   priceBox: {
     backgroundColor: '#000',
     color: '#FFF',
@@ -37,6 +41,7 @@ const gameInfoStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     borderRadius: 5,
+    marginRight: 10,
   },
   addToCartButton: {
     backgroundColor: '#28A745',
@@ -44,16 +49,11 @@ const gameInfoStyles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
   },
-  addToCartText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
   systemRequirements: {
     backgroundColor: '#243447',
     padding: 16,
     borderRadius: 10,
-    marginBottom: 40,
+    marginBottom: 50,
   },
 });
 
