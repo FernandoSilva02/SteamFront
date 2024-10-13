@@ -54,6 +54,30 @@ const generalStyles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
   },
+  buttonGroup: {
+    //Alinear los botones grandes
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  grayButton: {
+    //Botón gris
+    backgroundColor: '#616E78',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginBottom: 10,
+    alignItems: 'center',
+  },
+  blueButton: {
+    //Botón azul
+    backgroundColor: '#225999',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginBottom: 10,
+    alignItems: 'center',
+  },
 });
 
 export default generalStyles;

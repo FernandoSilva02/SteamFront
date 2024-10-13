@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,9 +10,12 @@ import {
 import generalStyles from '../styles/generalStyles';
 import gameInfoStyles from '../styles/gameInfoStyles';
 import Header from '../components/header';
+import AddToCartPopup from '../components/addToCartPopUp';
 
 const GameInfo = ({ route }) => {
   const { game } = route.params;
+
+  const [isModalVisible, setModalVisible] = useState(false);
 
   if (!game) {
     return <Text>Error: No game data available</Text>;
@@ -20,6 +23,12 @@ const GameInfo = ({ route }) => {
 
   // Asegúrate de que los requisitos estén disponibles
   const requirements = game.id_requirements || {};
+
+  const handleAddToCart = () => {
+    console.log('Juego añadido al carrito:', game); // Agrega esto para verificar el objeto `game`
+    setModalVisible(true); // Mostrar el pop-up
+  };
+  
 
   return (
     <ScrollView style={generalStyles.container}>
@@ -77,9 +86,17 @@ const GameInfo = ({ route }) => {
               {`$${(game.price / 1000).toFixed(3)}`}
             </Text>
           </View>
-          <TouchableOpacity style={generalStyles.smallButton}>
+          <TouchableOpacity
+            style={generalStyles.smallButton}
+            onPress={handleAddToCart}
+          >
             <Text style={generalStyles.ButtonText}>Añadir al carro</Text>
           </TouchableOpacity>
+          <AddToCartPopup
+            visible={isModalVisible}
+            onClose={() => setModalVisible(false)}
+            game={game}
+          />
         </View>
       </View>
 

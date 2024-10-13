@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import mainMenuStyles from '../styles/mainMenuStyles';
 import generalStyles from '../styles/generalStyles';
@@ -7,10 +7,14 @@ import generalStyles from '../styles/generalStyles';
 const GameItem = ({ imageUri, name, price, game }) => {
   const navigation = useNavigation();
 
+  const handlePress = () => {
+    navigation.navigate('GameInfo', { game });
+  };
+
   return (
-    <View
+    <TouchableOpacity
       style={mainMenuStyles.gameItemContainer}
-      onTouchEnd={() => navigation.navigate('GameInfo', { game })}
+      onPress={handlePress}
     >
       <View style={mainMenuStyles.gameInfo}>
         <View style={mainMenuStyles.imageContainer}>
@@ -25,7 +29,7 @@ const GameItem = ({ imageUri, name, price, game }) => {
         </View>
       </View>
       <Text style={generalStyles.priceText}>{price}</Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 
