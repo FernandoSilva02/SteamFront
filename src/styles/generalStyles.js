@@ -78,6 +78,15 @@ const generalStyles = StyleSheet.create({
     marginBottom: 10,
     alignItems: 'center',
   },
+  redButton: {
+    //Botón rojo
+    backgroundColor: '#CF352B',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginBottom: 10,
+    alignItems: 'center',
+  },
 });
 
 export default generalStyles;
