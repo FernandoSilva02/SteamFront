@@ -18,6 +18,9 @@ const GameInfo = ({ route }) => {
     return <Text>Error: No game data available</Text>;
   }
 
+  // Asegúrate de que los requisitos estén disponibles
+  const requirements = game.id_requirements || {};
+
   return (
     <ScrollView style={generalStyles.container}>
       {/* Logo de Steam */}
@@ -39,7 +42,7 @@ const GameInfo = ({ route }) => {
           Lanzamiento: {new Date(game.release_date).toLocaleDateString('es-ES')}
         </Text>
         <Text style={generalStyles.descriptionGameText}>
-          Categoría: {game.id_category}
+          Categoría: {game.id_category.category_name}
         </Text>
       </View>
 
@@ -88,15 +91,19 @@ const GameInfo = ({ route }) => {
       <View style={gameInfoStyles.systemRequirements}>
         <Text style={generalStyles.titleTextView}>REQUISITOS DEL SISTEMA</Text>
         <Text style={generalStyles.descriptionGameText}>
-          SO: 64-bit Windows 10
+          SO: {requirements.platform || 'N/A'}
         </Text>
-        <Text style={generalStyles.descriptionGameText}>Procesador: 1 GHz</Text>
         <Text style={generalStyles.descriptionGameText}>
-          Memoria: 1 GB de RAM
+          Procesador: {requirements.processor || 'N/A'}
         </Text>
-        <Text style={generalStyles.descriptionGameText}>Gráficos: 500 MB</Text>
         <Text style={generalStyles.descriptionGameText}>
-          Almacenamiento: 40 MB de espacio disponible
+          Memoria: {requirements.memory || 'N/A'}
+        </Text>
+        <Text style={generalStyles.descriptionGameText}>
+          Gráficos: {requirements.graphics || 'N/A'}
+        </Text>
+        <Text style={generalStyles.descriptionGameText}>
+          Almacenamiento: {requirements.storage || 'N/A'}
         </Text>
       </View>
     </ScrollView>
