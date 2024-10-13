@@ -70,10 +70,6 @@ const GameInfo = ({ route }) => {
           <Text style={generalStyles.secundaryTitleText}>
             Comprar {game.game_name.toUpperCase()}
           </Text>
-          <Image
-            source={require('../assets/windows.png')}
-            style={gameInfoStyles.osIcon}
-          />
         </View>
         <View style={gameInfoStyles.priceAndCart}>
           <View style={gameInfoStyles.priceBox}>

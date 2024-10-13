@@ -44,11 +44,6 @@ const gameInfoStyles = StyleSheet.create({
     borderRadius: 5,
     marginRight: 10,
   },
-  osIcon: {
-    width: 20, // Ajusta el tamaño según sea necesario
-    height: 20,
-    marginLeft: 10, // Espacio entre el texto y el icono
-  },
   systemRequirements: {
     backgroundColor: '#243447',
     padding: 16,
