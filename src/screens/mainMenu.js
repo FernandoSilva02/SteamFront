@@ -24,7 +24,7 @@ function MainMenu() {
     const categoryQuery = selectedCategory
       ? `?category=${selectedCategory}`
       : '';
-    fetch(`http://192.168.1.106:3000/api/games/${categoryQuery}`)
+    fetch(`http://192.168.1.111:3000/api/games/${categoryQuery}`)
       .then((response) => response.json())
       .then((data) => {
         console.log('Games fetched:', data);
@@ -35,7 +35,7 @@ function MainMenu() {
 
   // useEffect para obtener las categorías de la API
   useEffect(() => {
-    fetch('http://192.168.1.106:3000/api/categories/', {
+    fetch('http://192.168.1.111:3000/api/categories/', {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
