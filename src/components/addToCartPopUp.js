@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -11,6 +12,14 @@ import generalStyles from '../styles/generalStyles';
 import addToCartPopUpStyles from '../styles/components/addToCartPopUpStyles';
 
 const AddToCartPopup = ({ visible, onClose, game }) => {
+  const navigation = useNavigation();
+
+  const handleViewCart = () => {
+    navigation.navigate('Cart', {
+      cartItems: [game],
+    });
+  };
+
   return (
     <Modal
       animationType="fade"
@@ -48,7 +57,7 @@ const AddToCartPopup = ({ visible, onClose, game }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={generalStyles.blueButton}
-              onPress={() => alert('Ir al carro')}
+              onPress={handleViewCart}
             >
               <Text style={generalStyles.ButtonText}>Ver mi carro</Text>
             </TouchableOpacity>
