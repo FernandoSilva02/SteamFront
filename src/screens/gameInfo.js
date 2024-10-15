@@ -1,19 +1,15 @@
+// GameInfo.js
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
 import generalStyles from '../styles/generalStyles';
 import gameInfoStyles from '../styles/gameInfoStyles';
 import Header from '../components/header';
 import AddToCartPopup from '../components/addToCartPopUp';
+import { useCart } from '../context/cartContext';
 
 const GameInfo = ({ route }) => {
   const { game } = route.params;
+  const { addToCart } = useCart();
 
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -21,27 +17,20 @@ const GameInfo = ({ route }) => {
     return <Text>Error: No game data available</Text>;
   }
 
-  // Asegúrate de que los requisitos estén disponibles
   const requirements = game.id_requirements || {};
 
   const handleAddToCart = () => {
-    console.log('Juego añadido al carrito:', game); // Agrega esto para verificar el objeto `game`
-    setModalVisible(true); // Mostrar el pop-up
+    addToCart(game); // Usa addToCart del contexto
+    setModalVisible(true); // Muestra el pop-up
   };
-  
 
   return (
     <ScrollView style={generalStyles.container}>
-      {/* Logo de Steam */}
       <Header />
-
-      {/* Imagen principal del juego */}
       <Image
         source={{ uri: game.photos[0] }}
         style={gameInfoStyles.mainImage}
       />
-
-      {/* Información del juego */}
       <View style={gameInfoStyles.gameInfoContainer}>
         <Text style={generalStyles.titleTextView}>{game.game_name}</Text>
         <Text style={generalStyles.descriptionGameText}>
@@ -54,11 +43,8 @@ const GameInfo = ({ route }) => {
           Categoría: {game.id_category.category_name}
         </Text>
       </View>
-
-      {/* Descripción */}
       <Text style={generalStyles.descriptionGameText}>{game.description}</Text>
 
-      {/* Carrusel de imágenes */}
       <ScrollView
         horizontal
         pagingEnabled
@@ -73,7 +59,6 @@ const GameInfo = ({ route }) => {
         ))}
       </ScrollView>
 
-      {/* Botón de compra */}
       <View style={gameInfoStyles.buySection}>
         <View style={gameInfoStyles.titleAndIcon}>
           <Text style={generalStyles.secundaryTitleText}>
