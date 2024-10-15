@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,13 +10,25 @@ import {
 import generalStyles from '../styles/generalStyles';
 import gameInfoStyles from '../styles/gameInfoStyles';
 import Header from '../components/header';
+import AddToCartPopup from '../components/addToCartPopUp';
 
 const GameInfo = ({ route }) => {
   const { game } = route.params;
 
+  const [isModalVisible, setModalVisible] = useState(false);
+
   if (!game) {
     return <Text>Error: No game data available</Text>;
   }
+
+  // Asegúrate de que los requisitos estén disponibles
+  const requirements = game.id_requirements || {};
+
+  const handleAddToCart = () => {
+    console.log('Juego añadido al carrito:', game); // Agrega esto para verificar el objeto `game`
+    setModalVisible(true); // Mostrar el pop-up
+  };
+  
 
   return (
     <ScrollView style={generalStyles.container}>
@@ -39,7 +51,7 @@ const GameInfo = ({ route }) => {
           Lanzamiento: {new Date(game.release_date).toLocaleDateString('es-ES')}
         </Text>
         <Text style={generalStyles.descriptionGameText}>
-          Categoría: {game.id_category}
+          Categoría: {game.id_category.category_name}
         </Text>
       </View>
 
@@ -67,10 +79,6 @@ const GameInfo = ({ route }) => {
           <Text style={generalStyles.secundaryTitleText}>
             Comprar {game.game_name.toUpperCase()}
           </Text>
-          <Image
-            source={require('../assets/windows.png')}
-            style={gameInfoStyles.osIcon}
-          />
         </View>
         <View style={gameInfoStyles.priceAndCart}>
           <View style={gameInfoStyles.priceBox}>
@@ -78,9 +86,17 @@ const GameInfo = ({ route }) => {
               {`$${(game.price / 1000).toFixed(3)}`}
             </Text>
           </View>
-          <TouchableOpacity style={generalStyles.smallButton}>
+          <TouchableOpacity
+            style={generalStyles.smallButton}
+            onPress={handleAddToCart}
+          >
             <Text style={generalStyles.ButtonText}>Añadir al carro</Text>
           </TouchableOpacity>
+          <AddToCartPopup
+            visible={isModalVisible}
+            onClose={() => setModalVisible(false)}
+            game={game}
+          />
         </View>
       </View>
 
@@ -88,15 +104,19 @@ const GameInfo = ({ route }) => {
       <View style={gameInfoStyles.systemRequirements}>
         <Text style={generalStyles.titleTextView}>REQUISITOS DEL SISTEMA</Text>
         <Text style={generalStyles.descriptionGameText}>
-          SO: 64-bit Windows 10
+          SO: {requirements.platform || 'N/A'}
         </Text>
-        <Text style={generalStyles.descriptionGameText}>Procesador: 1 GHz</Text>
         <Text style={generalStyles.descriptionGameText}>
-          Memoria: 1 GB de RAM
+          Procesador: {requirements.processor || 'N/A'}
         </Text>
-        <Text style={generalStyles.descriptionGameText}>Gráficos: 500 MB</Text>
         <Text style={generalStyles.descriptionGameText}>
-          Almacenamiento: 40 MB de espacio disponible
+          Memoria: {requirements.memory || 'N/A'}
+        </Text>
+        <Text style={generalStyles.descriptionGameText}>
+          Gráficos: {requirements.graphics || 'N/A'}
+        </Text>
+        <Text style={generalStyles.descriptionGameText}>
+          Almacenamiento: {requirements.storage || 'N/A'}
         </Text>
       </View>
     </ScrollView>
