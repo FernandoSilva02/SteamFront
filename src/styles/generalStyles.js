@@ -47,6 +47,13 @@ const generalStyles = StyleSheet.create({
     color: '#FFF',
     fontWeight: '300',
   },
+  deleteText: {
+    //Texto para eliminar un juego
+    fontSize: 14,
+    color: '#D9D9D9',
+    fontWeight: '300',
+    textDecorationLine: 'underline',
+  },
   smallButton: {
     //Botón para añadir al carro y guardar usuario
     backgroundColor: '#77B322',
@@ -57,8 +64,9 @@ const generalStyles = StyleSheet.create({
   buttonGroup: {
     //Alinear los botones grandes
     flexDirection: 'column',
-    justifyContent: 'space-between',
-    width: '100%',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    width: 210,
   },
   grayButton: {
     //Botón gris
