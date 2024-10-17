@@ -32,7 +32,7 @@ const cartStyles = StyleSheet.create({
   buttonContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 50,
   },
 });
 
