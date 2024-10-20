@@ -5,7 +5,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  StyleSheet,
+  Alert,
 } from 'react-native';
 import Header from '../components/header';
 import generalStyles from '../styles/generalStyles';
@@ -21,6 +21,11 @@ const Cart = ({ navigation }) => {
 
   const handleContinueShopping = () => {
     navigation.navigate('MainMenu');
+  };
+
+  // Función para manejar la navegación a la pantalla de pago
+  const handlePayment = () => {
+    navigation.navigate('PaymentScreen', { totalPrice }); // Navega a la pantalla de pago y pasa el monto total
   };
 
   return (
@@ -75,7 +80,10 @@ const Cart = ({ navigation }) => {
           </View>
 
           <View style={cartStyles.paymentRow}>
-            <TouchableOpacity style={generalStyles.blueButton}>
+            <TouchableOpacity
+              style={generalStyles.blueButton}
+              onPress={handlePayment} // Llama a la función de navegación al pago
+            >
               <Text style={generalStyles.ButtonText}>Continuar al pago</Text>
             </TouchableOpacity>
           </View>

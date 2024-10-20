@@ -95,6 +95,23 @@ const generalStyles = StyleSheet.create({
     marginBottom: 10,
     alignItems: 'center',
   },
+  inputBox: {
+    //Caja de texto
+    backgroundColor: '#1A1E29',
+    color: '#fff',
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 15,
+  },
+  rowBox: {
+    //Alinear cajas de texto si son más de 1 por fila
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  columnBox: {
+    //Alinear cajas de texto en la columna
+    flex: 0.48,
+  },
 });
 
 export default generalStyles;
