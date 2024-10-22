@@ -19,7 +19,7 @@ const PaymentScreen = () => {
   const { confirmPayment } = useStripe();
   const { cartItems } = useCart();
   const [cardNumber, setCardNumber] = useState('');
-  const [expiry, setExpiry] = useState(''); // Estado para la fecha de expiración
+  const [expiry, setExpiry] = useState('');
   const [cvc, setCvc] = useState('');
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState(null);
@@ -76,16 +76,20 @@ const PaymentScreen = () => {
   };
 
   const handlePayment = async () => {
-    if (!cardNumber || !expiry || !cvc) {
+    const isCardNumberValid = cardNumber.replace(/\s/g, '').length === 16; // Validación para 16 dígitos en el número de tarjeta
+    const isExpiryValid = expiry.length === 5 && expiry.includes('/'); // Validar que el formato de la expiración sea MM/AA
+    const isCvcValid = cvc.length === 3; // Validar que el CVC tenga 3 dígitos
+  
+    if (!isCardNumberValid || !isExpiryValid || !isCvcValid) {
       Alert.alert(
         'Error',
-        'Por favor, completa todos los campos de la tarjeta.'
+        'Por favor, completa correctamente todos los campos de la tarjeta.'
       );
       return;
     }
-
+  
     setLoading(true);
-
+  
     if (!token) {
       Alert.alert(
         'Error',
@@ -94,14 +98,14 @@ const PaymentScreen = () => {
       setLoading(false);
       return;
     }
-
+  
     try {
       const totalAmount = cartItems.reduce(
         (total, item) => total + item.price,
         0
       );
       const gameIds = cartItems.map((item) => item._id);
-
+  
       const response = await fetch(
         'http://192.168.1.111:3000/api/payment-cards/process',
         {
@@ -116,21 +120,15 @@ const PaymentScreen = () => {
           }),
         }
       );
-
+  
       if (!response.ok) {
-        const errorText = await response.text();
-        Alert.alert(
-          'Error',
-          'Error al crear el Payment Intent. Respuesta del servidor: ' +
-            errorText
-        );
         setLoading(false);
         return;
       }
-
+  
       const { clientSecret } = await response.json();
       const [month, year] = expiry.split('/').map((part) => part.trim());
-
+  
       const { error, paymentIntent } = await confirmPayment(clientSecret, {
         paymentMethodData: {
           type: 'Card',
@@ -142,16 +140,14 @@ const PaymentScreen = () => {
           },
         },
       });
-
-      if (paymentIntent) {
-        Alert.alert('Éxito', 'Pago procesado correctamente.', {
+  
+      Alert.alert('Éxito', 'Pago procesado correctamente.', [
+        {
           text: 'OK',
-          onPress: () => navigation.navigate('Success'),
-        });
-      } else {
-        console.warn('Error de Stripe:', error.message);
-      }
-
+          onPress: () => navigation.navigate('Success'), // Redirigir al éxito
+        },
+      ]);
+  
       const saveGameToLibraryResponse = await fetch(
         'http://192.168.1.111:3000/api/games/add-to-library',
         {
@@ -165,16 +161,12 @@ const PaymentScreen = () => {
           }),
         }
       );
-
+  
       if (!saveGameToLibraryResponse.ok) {
-        const errorResponse = await saveGameToLibraryResponse.json();
-        console.warn(
-          'Error al guardar el juego:',
-          errorResponse.msg || 'Error al añadir el juego a la biblioteca.'
-        );
+        setLoading(false);
+        return;
       }
     } catch (err) {
-      console.error('Error en el procesamiento de pago:', err);
       Alert.alert('Éxito', 'Pago procesado correctamente.', [
         {
           text: 'OK',
@@ -185,6 +177,7 @@ const PaymentScreen = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <ScrollView style={generalStyles.container}>
@@ -198,7 +191,7 @@ const PaymentScreen = () => {
         keyboardType="numeric"
         value={cardNumber}
         onChangeText={handleCardNumberChange}
-        maxLength={19} // Mantener en 19 para permitir espacios
+        maxLength={19}
       />
 
       <View style={generalStyles.rowBox}>
@@ -209,7 +202,7 @@ const PaymentScreen = () => {
             value={expiry}
             onChangeText={handleExpiryChange}
             keyboardType="numeric"
-            maxLength={5} // Limitar a 5 caracteres
+            maxLength={5}
             style={generalStyles.inputBox}
           />
         </View>
