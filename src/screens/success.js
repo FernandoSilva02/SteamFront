@@ -16,9 +16,9 @@ const Success = ({ navigation }) => {
       <View style={generalStyles.buttonGroup}>
         <TouchableOpacity
           style={generalStyles.grayButton}
-          onPress={() => navigation.navigate('MainMenu')}
+          onPress={() => navigation.navigate('Library')}
         >
-          <Text style={generalStyles.ButtonText}>Regresar al inicio</Text>
+          <Text style={generalStyles.ButtonText}>Ver la biblioteca</Text>
         </TouchableOpacity>
       </View>
       </View>
