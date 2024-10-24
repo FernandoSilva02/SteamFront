@@ -55,11 +55,12 @@ function Library() {
           },
         }
       );
-
+  
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        const errorDetails = await response.text(); // Captura el cuerpo de la respuesta en caso de error
+        throw new Error(`Error fetching game details: ${response.status} ${errorDetails}`);
       }
-
+  
       const game = await response.json();
       console.log('Game details fetched:', game);
       return game;
@@ -67,12 +68,13 @@ function Library() {
       console.error('Error fetching game details:', error);
     }
   };
+  
 
   const handleGamePress = async (gameId) => {
     const gameDetails = await fetchGameDetails(gameId);
     console.log('Fetched game details:', gameDetails);
     if (gameDetails) {
-      navigation.navigate('LibraryGameInfo', { game: gameDetails });
+      navigation.navigate('LibraryInfo', { game: gameDetails });
     }
   };
 
@@ -83,18 +85,20 @@ function Library() {
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <ScrollView style={gameInfoStyles.scrollView}>
-            <Text style={generalStyles.titleTextView}>Biblioteca</Text>
+          <Text style={generalStyles.titleTextView}>Biblioteca</Text>
           <View style={mainMenuStyles.gameList}>
             {games.length > 0 ? (
               games
-                .filter(game => game.photos && game.photos.length > 0 && game.title) // Filtra juegos válidos
+                .filter(
+                  (game) => game.photos && game.photos.length > 0 && game.title
+                ) // Filtra juegos válidos
                 .map((game) => (
                   <GameItemLibrary
                     key={game._id}
                     imageUri={game.photos[0]} // Se asume que al menos hay una foto
                     name={game.title}
                     game={game}
-                    onPress={() => handleGamePress(game.gameId)}
+                    onPress={() => handleGamePress(game._id)} // Asegúrate de usar el ID correcto
                   />
                 ))
             ) : (

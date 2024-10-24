@@ -1,25 +1,21 @@
 import React from 'react';
 import { TouchableOpacity, View, Text, Image, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import generalStyles from '../styles/generalStyles';
 import mainMenuStyles from '../styles/mainMenuStyles';
 
-const GameItemLibrary = ({ imageUri, name, game }) => {
-  const navigation = useNavigation();
-
-  const handlePress = () => {
-    navigation.navigate('LibraryInfo', { game });
-  };
-
+const GameItemLibrary = ({ imageUri, name, game, onPress }) => {
   return (
     <TouchableOpacity
       style={mainMenuStyles.gameItemContainer}
-      onPress={handlePress}
+      onPress={onPress} // Usa la función pasada como prop
     >
       <View style={mainMenuStyles.gameInfo}>
         <View style={mainMenuStyles.imageContainer}>
           {imageUri ? (
-            <Image source={{ uri: imageUri }} style={mainMenuStyles.gameItemImage} />
+            <Image
+              source={{ uri: imageUri }}
+              style={mainMenuStyles.gameItemImage}
+            />
           ) : (
             <View style={styles.placeholder} />
           )}
