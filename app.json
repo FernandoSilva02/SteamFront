@@ -12,16 +12,26 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "statusBar": {
+        "style": "light"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "statusBar": {
+        "barStyle": "light-content",
+        "backgroundColor": "#1A2A3D"
       }
     },
     "web": {
       "favicon": "./src/assets/icon.png"
+    },
+    "extra": {
+      "apiUrl": "http://192.168.1.11:3000"
     }
   }
 }

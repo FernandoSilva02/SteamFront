@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Header from '../components/header';
-import generalStyles from '../styles/generalStyles';
+import generalStyles from '../styles/formStyles';
 import cartStyles from '../styles/cartStyles';
 
 const formatCardNumber = (number) => {
@@ -31,7 +31,7 @@ const PaymentScreen = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [securityCode, setSecurityCode] = useState('');
   const [idNumber, setIdNumber] = useState('');
-  const [nameHolder, setNameHolder] = useState(''); 
+  const [nameHolder, setNameHolder] = useState('');
 
   const handleCardNumberChange = (input) => {
     const formatted = formatCardNumber(input);
@@ -101,88 +101,90 @@ const PaymentScreen = () => {
   };
 
   return (
-    <ScrollView style={generalStyles.container}>
+    <>
       <Header />
-      <Text style={generalStyles.titleTextView}>Métodos de pago</Text>
+      <ScrollView style={generalStyles.container}>
+        <Text style={generalStyles.titleTextView}>Métodos de pago</Text>
 
-      {/* Nombre en la tarjeta */}
-      <Text style={generalStyles.formText}>Nombre en la tarjeta</Text>
-      <TextInput
-        style={generalStyles.inputBox}
-        value={nameHolder}
-        onChangeText={handleNameChange}
-        autoCapitalize="characters"
-      />
+        {/* Nombre en la tarjeta */}
+        <Text style={generalStyles.formText}>Nombre en la tarjeta</Text>
+        <TextInput
+          style={generalStyles.inputBox}
+          value={nameHolder}
+          onChangeText={handleNameChange}
+          autoCapitalize="characters"
+        />
 
-      {/* Número de la tarjeta */}
-      <Text style={generalStyles.formText}>Número de la tarjeta</Text>
-      <TextInput
-        style={generalStyles.inputBox}
-        keyboardType="numeric"
-        value={cardNumber}
-        onChangeText={handleCardNumberChange}
-        maxLength={19}
-      />
+        {/* Número de la tarjeta */}
+        <Text style={generalStyles.formText}>Número de la tarjeta</Text>
+        <TextInput
+          style={generalStyles.inputBox}
+          keyboardType="numeric"
+          value={cardNumber}
+          onChangeText={handleCardNumberChange}
+          maxLength={19}
+        />
 
-      {/* Fecha de expiración */}
-      <View style={generalStyles.rowBox}>
-        <View style={generalStyles.columnBox}>
-          <Text style={generalStyles.formText}>Fecha de expiración</Text>
+        {/* Fecha de expiración */}
+        <View style={generalStyles.rowBox}>
+          <View style={generalStyles.columnBox}>
+            <Text style={generalStyles.formText}>Fecha de expiración</Text>
 
-          {/* Botón para abrir el selector de fecha */}
-          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+            {/* Botón para abrir el selector de fecha */}
+            <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+              <TextInput
+                style={generalStyles.inputBox}
+                value={expiryDate}
+                editable={false} // No editable, solo abre el DatePicker
+              />
+            </TouchableOpacity>
+
+            {showDatePicker && (
+              <DateTimePicker
+                value={selectedDate}
+                mode="date"
+                display="spinner"
+                onChange={handleDateChange}
+                minimumDate={new Date()} // No permitir fechas pasadas
+                maximumDate={new Date(new Date().getFullYear() + 10, 11, 31)} // Máximo 10 años en el futuro
+              />
+            )}
+          </View>
+
+          {/* Código de seguridad */}
+          <View style={generalStyles.columnBox}>
+            <Text style={generalStyles.formText}>Código de seguridad</Text>
             <TextInput
               style={generalStyles.inputBox}
-              value={expiryDate}
-              editable={false} // No editable, solo abre el DatePicker
+              keyboardType="numeric"
+              value={securityCode}
+              onChangeText={handleSecurityCodeChange}
+              maxLength={3}
             />
+          </View>
+        </View>
+
+        {/* Cédula de ciudadanía */}
+        <Text style={generalStyles.formText}>Cédula de ciudadanía</Text>
+        <TextInput
+          style={generalStyles.inputBox}
+          keyboardType="numeric"
+          value={idNumber}
+          onChangeText={handleIdNumberChange}
+          maxLength={10}
+        />
+
+        {/* Botón para procesar el pago */}
+        <View style={cartStyles.paymentRow}>
+          <TouchableOpacity
+            style={generalStyles.blueButton}
+            onPress={handlePayment}
+          >
+            <Text style={generalStyles.ButtonText}>Continuar al pago</Text>
           </TouchableOpacity>
-
-          {showDatePicker && (
-            <DateTimePicker
-              value={selectedDate}
-              mode="date"
-              display="spinner"
-              onChange={handleDateChange}
-              minimumDate={new Date()} // No permitir fechas pasadas
-              maximumDate={new Date(new Date().getFullYear() + 10, 11, 31)} // Máximo 10 años en el futuro
-            />
-          )}
         </View>
-
-        {/* Código de seguridad */}
-        <View style={generalStyles.columnBox}>
-          <Text style={generalStyles.formText}>Código de seguridad</Text>
-          <TextInput
-            style={generalStyles.inputBox}
-            keyboardType="numeric"
-            value={securityCode}
-            onChangeText={handleSecurityCodeChange}
-            maxLength={3}
-          />
-        </View>
-      </View>
-
-      {/* Cédula de ciudadanía */}
-      <Text style={generalStyles.formText}>Cédula de ciudadanía</Text>
-      <TextInput
-        style={generalStyles.inputBox}
-        keyboardType="numeric"
-        value={idNumber}
-        onChangeText={handleIdNumberChange}
-        maxLength={10}
-      />
-
-      {/* Botón para procesar el pago */}
-      <View style={cartStyles.paymentRow}>
-        <TouchableOpacity
-          style={generalStyles.blueButton}
-          onPress={handlePayment}
-        >
-          <Text style={generalStyles.ButtonText}>Continuar al pago</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </>
   );
 };
 

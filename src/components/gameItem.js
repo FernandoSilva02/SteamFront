@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import mainMenuStyles from '../styles/mainMenuStyles';
-import generalStyles from '../styles/generalStyles';
+import generalStyles from '../styles/formStyles';
 
 const GameItem = ({ imageUri, name, price, game }) => {
   const navigation = useNavigation();
