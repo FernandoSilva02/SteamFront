@@ -1,4 +1,3 @@
-// GameInfo.js
 import React, { useState } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
 import generalStyles from '../styles/generalStyles';
