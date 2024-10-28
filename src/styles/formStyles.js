@@ -1,19 +1,59 @@
 import { StyleSheet } from 'react-native';
 
-const generalStyles = StyleSheet.create({
+const formStyles = StyleSheet.create({
+  placeholderText: {
+    placeholderTextColor: '#7B8D9D',
+  },
+  textHolder: {
+    color: '#7B8D9D', // Color del texto
+    fontSize: 16, // Tamaño de fuente
+  },
+  underlineText: {
+    textDecorationLine: 'underline',
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  descriptionText: {
+    fontSize: 14,
+    color: '#7B8D9D',
+    textAlign: 'center',
+    paddingHorizontal: 20, // Para dar espacio lateral
+  },
+
+  logoTouchable: {
+    activeOpacity: 1,
+  },
   container: {
     //Contenedor del programa
     flex: 1,
     backgroundColor: '#1A2A3D',
+
     paddingHorizontal: 16,
-    paddingTop: 40,
+    paddingTop: 0,
+    // justifyContent: 'center',
   },
+  //Alternative nav container with logo
+  containerNav: {
+    height: 'auto', // Altura ajustada según el tamaño del logo
+    backgroundColor: '#181d24',
+    justifyContent: 'center', // Centrar verticalmente el contenido
+    alignItems: 'center', // Centrar horizontalmente el contenido
+    width: '100%', // Ocupar todo el ancho de la pantalla
+    borderTopWidth: '45%3', // Grosor del borde superior
+    borderTopColor: '#1A2A3D', // Color blanco para el borde superior
+    marginTop: 0, // Ajusta esto según lo necesites, prueba con valores pequeños o usa padding
+    paddingVertical: 10, // Si quieres un poco de espacio interno, pero también puedes dejarlo en 0
+  },
+
   titleTextView: {
     //Titulo de la vista || Requisitos del sistema
-    fontSize: 18,
+    fontWeight: '900',
+    marginVertical: 10,
+    fontSize: 22,
     color: '#FFF',
-    marginBottom: 10,
+    marginBottom: '10%',
     fontWeight: '600',
+    textAlign: 'center',
   },
   secundaryTitleText: {
     //Titulo juego(Vista MainMenu) || Comprar juego-Nombre del juego en un modal-Total estimado(Usado para modales) || Información del usuario (vista Mi Perfil)
@@ -24,7 +64,8 @@ const generalStyles = StyleSheet.create({
   },
   ButtonText: {
     //Botones || Tags para filtrar
-    fontSize: 14,
+    padding: 5,
+    fontSize: 16,
     color: '#FFF',
     fontWeight: '600',
   },
@@ -43,9 +84,11 @@ const generalStyles = StyleSheet.create({
   },
   formText: {
     //Titulos y campos de texto para formularios
-    fontSize: 14,
+    marginLeft: 4,
+    fontSize: 17,
     color: '#FFF',
     fontWeight: '300',
+    paddingBottom: 10,
   },
   deleteText: {
     //Texto para eliminar un juego
@@ -79,10 +122,11 @@ const generalStyles = StyleSheet.create({
   },
   blueButton: {
     //Botón azul
+    marginTop: 10,
     backgroundColor: '#225999',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 5,
+    borderRadius: 9,
     marginBottom: 10,
     alignItems: 'center',
   },
@@ -99,9 +143,10 @@ const generalStyles = StyleSheet.create({
     //Caja de texto
     backgroundColor: '#1A1E29',
     color: '#fff',
-    padding: 10,
-    borderRadius: 5,
+    padding: 15,
+    borderRadius: 9,
     marginBottom: 15,
+    fontSize: 16,
   },
   rowBox: {
     //Alinear cajas de texto si son más de 1 por fila
@@ -114,4 +159,8 @@ const generalStyles = StyleSheet.create({
   },
 });
 
-export default generalStyles;
+export default formStyles;
+
+//Edición de prueba
+
+//Nuevo comentario de prueba
