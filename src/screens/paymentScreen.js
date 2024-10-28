@@ -1,121 +1,191 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  TextInput,
-  ScrollView,
-  TouchableOpacity,
   Alert,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
 } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import Header from '../components/header';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import generalStyles from '../styles/generalStyles';
-import cartStyles from '../styles/cartStyles';
-
-const formatCardNumber = (number) => {
-  // Eliminar espacios previos y caracteres no numéricos
-  const cleaned = number.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-
-  // Formatear con espacios cada 4 dígitos
-  const formatted = cleaned.match(/.{1,4}/g);
-
-  // Unir en una cadena con espacios
-  return formatted ? formatted.join(' ') : number;
-};
+import { useCart } from '../context/cartContext';
+import { useStripe } from '@stripe/stripe-react-native';
+import { useNavigation } from '@react-navigation/native';
+import Header from '../components/header';
 
 const PaymentScreen = () => {
-  // Estados para almacenar los datos del formulario
+  const navigation = useNavigation();
+  const { confirmPayment } = useStripe();
+  const { cartItems } = useCart();
   const [cardNumber, setCardNumber] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [securityCode, setSecurityCode] = useState('');
-  const [idNumber, setIdNumber] = useState('');
-  const [nameHolder, setNameHolder] = useState(''); 
+  const [expiry, setExpiry] = useState('');
+  const [cvc, setCvc] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState(null);
+  const [cardType, setCardType] = useState('');
 
-  const handleCardNumberChange = (input) => {
-    const formatted = formatCardNumber(input);
-    setCardNumber(formatted);
-  };
+  useEffect(() => {
+    const storeToken = async () => {
+      const jwtToken =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjM5OGQ4N2QxMWUzN2ZiOTFlOTQ2NyIsImlhdCI6MTcyNzQxNTk5MiwiZXhwIjoxNzMwMDA3OTkyfQ.P3yWts0Tay9YaSfQlmeccQG-PTzP5F0qWGR5YXmPKbY';
+      await AsyncStorage.setItem('userToken', jwtToken);
+      setToken(jwtToken);
+    };
 
-  const handleNameChange = (input) => {
-    setNameHolder(input.replace(/\s+/g, ' '));
-  };
+    storeToken();
+  }, []);
 
-  const handleSecurityCodeChange = (input) => {
-    setSecurityCode(input.trim());
-  };
+  const detectCardType = (number) => {
+    const visaPattern = /^4[0-9]{12}(?:[0-9]{3})?$/;
+    const mastercardPattern = /^5[1-5][0-9]{14}$/;
+    const amexPattern = /^3[47][0-9]{13}$/;
+    const discoverPattern = /^6(?:011|5[0-9]{2})[0-9]{12}$/;
 
-  const handleIdNumberChange = (input) => {
-    setIdNumber(input.trim());
-  };
-
-  // Manejar cambio de fecha
-  const handleDateChange = (event, date) => {
-    setShowDatePicker(false); // Ocultar el DateTimePicker
-    if (date) {
-      // Formatear la fecha a MM/YY
-      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Mes con 2 dígitos
-      const year = date.getFullYear().toString().slice(2); // Últimos dos dígitos del año
-      setExpiryDate(`${month}/${year}`);
-      setSelectedDate(date);
+    if (visaPattern.test(number)) {
+      setCardType('Visa');
+    } else if (mastercardPattern.test(number)) {
+      setCardType('MasterCard');
+    } else if (amexPattern.test(number)) {
+      setCardType('American Express');
+    } else if (discoverPattern.test(number)) {
+      setCardType('Discover');
+    } else {
+      setCardType('');
     }
   };
 
-  const handlePayment = () => {
-    const cleanedCardNumber = cardNumber.replace(/\s+/g, '');
+  const handleCardNumberChange = (number) => {
+    const cleanedNumber = number.replace(/\D/g, '');
+    const formattedNumber = cleanedNumber.replace(/(\d{4})(?=\d)/g, '$1 ');
 
-    if (cleanedCardNumber.length < 16) {
+    setCardNumber(formattedNumber);
+    detectCardType(cleanedNumber);
+  };
+
+  const handleExpiryChange = (text) => {
+    if (text.length > 5) return;
+
+    let formattedText = text.replace(/\D/g, '');
+    if (formattedText.length > 2) {
+      formattedText =
+        formattedText.slice(0, 2) + '/' + formattedText.slice(2, 4);
+    }
+
+    setExpiry(formattedText);
+  };
+
+  const handlePayment = async () => {
+    const isCardNumberValid = cardNumber.replace(/\s/g, '').length === 16; // Validación para 16 dígitos en el número de tarjeta
+    const isExpiryValid = expiry.length === 5 && expiry.includes('/'); // Validar que el formato de la expiración sea MM/AA
+    const isCvcValid = cvc.length === 3; // Validar que el CVC tenga 3 dígitos
+  
+    if (!isCardNumberValid || !isExpiryValid || !isCvcValid) {
       Alert.alert(
         'Error',
-        'El número de la tarjeta debe tener al menos 16 dígitos.'
+        'Por favor, completa correctamente todos los campos de la tarjeta.'
       );
       return;
     }
-
-    if (nameHolder === '') {
-      Alert.alert('Error', 'El nombre del titular no puede estar vacío.');
-      return;
-    }
-
-    if (expiryDate.length < 4) {
-      Alert.alert('Error', 'La fecha de expiración debe tener 4 dígitos.');
-      return;
-    }
-
-    if (securityCode.length < 3) {
-      Alert.alert('Error', 'El código de seguridad debe tener 3 dígitos.');
-      return;
-    }
-
-    if (idNumber.length < 7) {
+  
+    setLoading(true);
+  
+    if (!token) {
       Alert.alert(
         'Error',
-        'La cédula de ciudadanía debe tener de 7 a 10 dígitos.'
+        'Token no encontrado. Por favor, inicia sesión nuevamente.'
       );
+      setLoading(false);
       return;
     }
-
-    // Procesa el pago
-    Alert.alert('Éxito', 'Pago procesado correctamente.');
+  
+    try {
+      const totalAmount = cartItems.reduce(
+        (total, item) => total + item.price,
+        0
+      );
+      const gameIds = cartItems.map((item) => item._id);
+  
+      const response = await fetch(
+        'http://192.168.1.111:3000/api/payment-cards/process',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            amount: totalAmount * 100,
+            gameIds,
+          }),
+        }
+      );
+  
+      if (!response.ok) {
+        setLoading(false);
+        return;
+      }
+  
+      const { clientSecret } = await response.json();
+      const [month, year] = expiry.split('/').map((part) => part.trim());
+  
+      const { error, paymentIntent } = await confirmPayment(clientSecret, {
+        paymentMethodData: {
+          type: 'Card',
+          card: {
+            number: cardNumber.replace(/\s/g, ''),
+            exp_month: parseInt(month, 10),
+            exp_year: parseInt(year, 10),
+            cvc: cvc,
+          },
+        },
+      });
+  
+      Alert.alert('Éxito', 'Pago procesado correctamente.', [
+        {
+          text: 'OK',
+          onPress: () => navigation.navigate('Success'), // Redirigir al éxito
+        },
+      ]);
+  
+      const saveGameToLibraryResponse = await fetch(
+        'http://192.168.1.111:3000/api/games/add-to-library',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            gameIds,
+          }),
+        }
+      );
+  
+      if (!saveGameToLibraryResponse.ok) {
+        setLoading(false);
+        return;
+      }
+    } catch (err) {
+      Alert.alert('Éxito', 'Pago procesado correctamente.', [
+        {
+          text: 'OK',
+          onPress: () => navigation.navigate('Success'),
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
   };
+  
 
   return (
     <ScrollView style={generalStyles.container}>
       <Header />
-      <Text style={generalStyles.titleTextView}>Métodos de pago</Text>
+      <Text style={generalStyles.titleTextView}>Método de pago</Text>
 
-      {/* Nombre en la tarjeta */}
-      <Text style={generalStyles.formText}>Nombre en la tarjeta</Text>
-      <TextInput
-        style={generalStyles.inputBox}
-        value={nameHolder}
-        onChangeText={handleNameChange}
-        autoCapitalize="characters"
-      />
-
-      {/* Número de la tarjeta */}
-      <Text style={generalStyles.formText}>Número de la tarjeta</Text>
+      <Text style={generalStyles.formText}>Número de tarjeta</Text>
+      <Text style={generalStyles.formText}>{cardType}</Text>
       <TextInput
         style={generalStyles.inputBox}
         keyboardType="numeric"
@@ -124,64 +194,40 @@ const PaymentScreen = () => {
         maxLength={19}
       />
 
-      {/* Fecha de expiración */}
       <View style={generalStyles.rowBox}>
         <View style={generalStyles.columnBox}>
           <Text style={generalStyles.formText}>Fecha de expiración</Text>
-
-          {/* Botón para abrir el selector de fecha */}
-          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-            <TextInput
-              style={generalStyles.inputBox}
-              value={expiryDate}
-              editable={false} // No editable, solo abre el DatePicker
-            />
-          </TouchableOpacity>
-
-          {showDatePicker && (
-            <DateTimePicker
-              value={selectedDate}
-              mode="date"
-              display="spinner"
-              onChange={handleDateChange}
-              minimumDate={new Date()} // No permitir fechas pasadas
-              maximumDate={new Date(new Date().getFullYear() + 10, 11, 31)} // Máximo 10 años en el futuro
-            />
-          )}
+          <TextInput
+            placeholder="MM/AA"
+            value={expiry}
+            onChangeText={handleExpiryChange}
+            keyboardType="numeric"
+            maxLength={5}
+            style={generalStyles.inputBox}
+          />
         </View>
 
-        {/* Código de seguridad */}
         <View style={generalStyles.columnBox}>
           <Text style={generalStyles.formText}>Código de seguridad</Text>
           <TextInput
             style={generalStyles.inputBox}
             keyboardType="numeric"
-            value={securityCode}
-            onChangeText={handleSecurityCodeChange}
+            value={cvc}
+            onChangeText={setCvc}
             maxLength={3}
           />
         </View>
       </View>
 
-      {/* Cédula de ciudadanía */}
-      <Text style={generalStyles.formText}>Cédula de ciudadanía</Text>
-      <TextInput
-        style={generalStyles.inputBox}
-        keyboardType="numeric"
-        value={idNumber}
-        onChangeText={handleIdNumberChange}
-        maxLength={10}
-      />
-
-      {/* Botón para procesar el pago */}
-      <View style={cartStyles.paymentRow}>
-        <TouchableOpacity
-          style={generalStyles.blueButton}
-          onPress={handlePayment}
-        >
-          <Text style={generalStyles.ButtonText}>Continuar al pago</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        style={generalStyles.blueButton}
+        onPress={handlePayment}
+        disabled={loading}
+      >
+        <Text style={generalStyles.ButtonText}>
+          {loading ? 'Procesando...' : 'Continuar al pago'}
+        </Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };

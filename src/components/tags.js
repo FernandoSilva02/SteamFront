@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import generalStyles from '../styles/generalStyles';
+import generalStyles from '../styles/formStyles';
 import tagStyles from '../styles/components/tagStyles';
 
 const Tag = ({ children, onPress, isSelected }) => (
