@@ -181,7 +181,6 @@ const PaymentScreen = () => {
 
   return (
     <ScrollView style={generalStyles.container}>
-    
       <Header />
       <Text style={generalStyles.titleTextView}>Método de pago</Text>
 
