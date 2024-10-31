@@ -1,15 +1,15 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import generalStyles from '../styles/formStyles';
+import { TouchableOpacity, Text } from 'react-native';
+import generalStyles from '../styles/generalStyles';
 import tagStyles from '../styles/components/tagStyles';
 
 const Tag = ({ children, onPress, isSelected }) => (
-  <View
+  <TouchableOpacity
     style={[tagStyles.tag, isSelected && tagStyles.tagSelected]}
-    onTouchEnd={onPress}
+    onPress={onPress} // Cambié onTouchEnd a onPress
   >
     <Text style={generalStyles.ButtonText}>{children}</Text>
-  </View>
+  </TouchableOpacity>
 );
 
 export default Tag;

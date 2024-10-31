@@ -24,16 +24,19 @@ const PaymentScreen = () => {
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState(null);
   const [cardType, setCardType] = useState('');
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
   useEffect(() => {
-    const storeToken = async () => {
-      const jwtToken =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjM5OGQ4N2QxMWUzN2ZiOTFlOTQ2NyIsImlhdCI6MTcyNzQxNTk5MiwiZXhwIjoxNzMwMDA3OTkyfQ.P3yWts0Tay9YaSfQlmeccQG-PTzP5F0qWGR5YXmPKbY';
-      await AsyncStorage.setItem('userToken', jwtToken);
-      setToken(jwtToken);
+    const fetchToken = async () => {
+      try {
+        const storedToken = await AsyncStorage.getItem('token');
+        setToken(storedToken);
+      } catch (error) {
+        console.error('Error al recuperar el token:', error);
+      }
     };
 
-    storeToken();
+    fetchToken();
   }, []);
 
   const detectCardType = (number) => {
@@ -76,10 +79,10 @@ const PaymentScreen = () => {
   };
 
   const handlePayment = async () => {
-    const isCardNumberValid = cardNumber.replace(/\s/g, '').length === 16; // Validación para 16 dígitos en el número de tarjeta
-    const isExpiryValid = expiry.length === 5 && expiry.includes('/'); // Validar que el formato de la expiración sea MM/AA
-    const isCvcValid = cvc.length === 3; // Validar que el CVC tenga 3 dígitos
-  
+    const isCardNumberValid = cardNumber.replace(/\s/g, '').length === 16;
+    const isExpiryValid = expiry.length === 5 && expiry.includes('/');
+    const isCvcValid = cvc.length === 3;
+
     if (!isCardNumberValid || !isExpiryValid || !isCvcValid) {
       Alert.alert(
         'Error',
@@ -87,9 +90,9 @@ const PaymentScreen = () => {
       );
       return;
     }
-  
+
     setLoading(true);
-  
+
     if (!token) {
       Alert.alert(
         'Error',
@@ -98,16 +101,16 @@ const PaymentScreen = () => {
       setLoading(false);
       return;
     }
-  
+
     try {
       const totalAmount = cartItems.reduce(
         (total, item) => total + item.price,
         0
       );
       const gameIds = cartItems.map((item) => item._id);
-  
+
       const response = await fetch(
-        'http://192.168.1.111:3000/api/payment-cards/process',
+        `${apiUrl}/api/payment-cards/process`,
         {
           method: 'POST',
           headers: {
@@ -120,15 +123,15 @@ const PaymentScreen = () => {
           }),
         }
       );
-  
+
       if (!response.ok) {
         setLoading(false);
         return;
       }
-  
+
       const { clientSecret } = await response.json();
       const [month, year] = expiry.split('/').map((part) => part.trim());
-  
+
       const { error, paymentIntent } = await confirmPayment(clientSecret, {
         paymentMethodData: {
           type: 'Card',
@@ -140,16 +143,16 @@ const PaymentScreen = () => {
           },
         },
       });
-  
+
       Alert.alert('Éxito', 'Pago procesado correctamente.', [
         {
           text: 'OK',
-          onPress: () => navigation.navigate('Success'), // Redirigir al éxito
+          onPress: () => navigation.navigate('Success'),
         },
       ]);
-  
+
       const saveGameToLibraryResponse = await fetch(
-        'http://192.168.1.111:3000/api/games/add-to-library',
+        `${apiUrl}/api/games/add-to-library`,
         {
           method: 'POST',
           headers: {
@@ -161,23 +164,17 @@ const PaymentScreen = () => {
           }),
         }
       );
-  
+
       if (!saveGameToLibraryResponse.ok) {
         setLoading(false);
         return;
       }
     } catch (err) {
-      Alert.alert('Éxito', 'Pago procesado correctamente.', [
-        {
-          text: 'OK',
-          onPress: () => navigation.navigate('Success'),
-        },
-      ]);
+      Alert.alert('Error', 'Hubo un problema al procesar el pago.');
     } finally {
       setLoading(false);
     }
   };
-  
 
   return (
     <ScrollView style={generalStyles.container}>

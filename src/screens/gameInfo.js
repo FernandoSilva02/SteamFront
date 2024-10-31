@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
-import generalStyles from '../styles/formStyles';
+import generalStyles from '../styles/generalStyles';
 import gameInfoStyles from '../styles/gameInfoStyles';
 import Header from '../components/header';
 import AddToCartPopup from '../components/addToCartPopUp';
@@ -25,9 +25,8 @@ const GameInfo = ({ route }) => {
 
   return (
     <>
-      <Header />
-
       <ScrollView style={generalStyles.container}>
+        <Header />
         <Image
           source={{ uri: game.photos[0] }}
           style={gameInfoStyles.mainImage}
