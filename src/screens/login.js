@@ -30,53 +30,50 @@ const LoginScreen = () => {
       setAlertMessage('Por favor ingresa un correo electrónico válido.');
       return;
     }
-
+  
     if (!validatePassword(password)) {
-      setAlertMessage(
-        'La contraseña debe tener al menos 12 caracteres, una letra mayúscula, una letra minúscula, un número, y un caracter especial.'
-      );
+      setAlertMessage('La contraseña debe tener al menos 12 caracteres, una letra mayúscula, una letra minúscula, un número, y un carácter especial.');
       return;
     }
-
+  
     try {
-      const userData = {
-        email,
-        password,
-      };
-
+      const userData = { email, password };
       const response = await fetch(`${apiUrl}/api/users/login`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
       });
-
+  
       const result = await response.json();
-
+      console.log('Response:', result); // Agregado para depuración
+  
       setAlertMessage(result.msg);
-
+  
       if (response.ok) {
-        // Almacenar el token en AsyncStorage
         await AsyncStorage.setItem('token', result.token);
-        // Obtener el token de AsyncStorage y mostrarlo
-        const storedToken = await AsyncStorage.getItem('token');
-        console.log('Token: ', storedToken);
-        // // Resetear la navegación a MainMenu
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: 'MainMenu' }],
-          })
-        );
+  
+        // Manejo de navegación con try-catch
+        try {
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: 'MainMenu' }],
+            })
+          );
+        } catch (navError) {
+          console.error('Error en la navegación:', navError);
+          setAlertMessage('Error al navegar a MainMenu');
+        }
       } else {
         setAlertMessage(result.msg || 'Hubo un problema con el login');
       }
     } catch (error) {
+      console.error('Error en el login:', error); // Agregado para depuración
       setAlertMessage('Error de conexión, por favor intenta de nuevo');
-      console.error('Error en el login:', error);
     }
   };
+  
+  
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

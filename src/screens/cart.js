@@ -8,7 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import Header from '../components/header';
-import generalStyles from '../styles/formStyles';
+import generalStyles from '../styles/generalStyles';
 import addToCartPopUpStyles from '../styles/components/addToCartPopUpStyles';
 import cartStyles from '../styles/cartStyles';
 import { useCart } from '../context/cartContext'; // Importa el contexto
@@ -30,8 +30,8 @@ const Cart = ({ navigation }) => {
 
   return (
     <>
-      <Header />
       <ScrollView style={generalStyles.container}>
+        <Header />
         <Text style={generalStyles.titleTextView}>Tu Carrito</Text>
 
         {cartItems.length === 0 ? (

@@ -34,12 +34,12 @@ export default function App() {
             <Stack.Screen
               name="MainMenu"
               component={MainMenu}
-              options={{ title: 'Main Menu', headerShown: false }}
+              options={{ title: 'MainMenu', headerShown: false }}
             />
             <Stack.Screen
               name="GameInfo"
               component={GameInfo}
-              options={{ title: 'Game Info', headerShown: false }}
+              options={{ title: 'GameInfo', headerShown: false }}
             />
             <Stack.Screen
               name="Cart"

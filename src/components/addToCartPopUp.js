@@ -8,7 +8,7 @@ import {
   Image,
   StyleSheet,
 } from 'react-native';
-import generalStyles from '../styles/formStyles';
+import generalStyles from '../styles/generalStyles';
 import addToCartPopUpStyles from '../styles/components/addToCartPopUpStyles';
 
 const AddToCartPopup = ({ visible, onClose, game }) => {

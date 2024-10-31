@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import generalStyles from '../styles/generalStyles';
 import gameInfoStyles from '../styles/gameInfoStyles';
 import mainMenuStyles from '../styles/mainMenuStyles';
@@ -10,15 +11,30 @@ import { useNavigation } from '@react-navigation/native';
 function Library() {
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(null);
   const navigation = useNavigation();
-
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjM5OGQ4N2QxMWUzN2ZiOTFlOTQ2NyIsImlhdCI6MTcyNzQxNTk5MiwiZXhwIjoxNzMwMDA3OTkyfQ.P3yWts0Tay9YaSfQlmeccQG-PTzP5F0qWGR5YXmPKbY'; // Reemplaza con tu token
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
   useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const storedToken = await AsyncStorage.getItem('token');
+        setToken(storedToken);
+      } catch (error) {
+        console.error('Error al recuperar el token:', error);
+      }
+    };
+
+    fetchToken();
+  }, []);
+  
+
+  useEffect(() => {
+    if (!token) return;
+
     const fetchLibrary = async () => {
       try {
-        const response = await fetch('http://192.168.1.111:3000/api/library/', {
+        const response = await fetch(`${apiUrl}/api/library/`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -27,12 +43,13 @@ function Library() {
         });
 
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          const errorMsg = await response.text();
+          throw new Error(`Network response was not ok: ${errorMsg}`);
         }
 
         const data = await response.json();
         console.log('Library fetched:', data);
-        setGames(data.games);
+        setGames(data.games || []); // Asegura que games esté definido como array
       } catch (error) {
         console.error('Error fetching library:', error);
       } finally {
@@ -41,12 +58,12 @@ function Library() {
     };
 
     fetchLibrary();
-  }, []);
+  }, [token]);
 
   const fetchGameDetails = async (gameId) => {
     try {
       const response = await fetch(
-        `http://192.168.1.111:3000/api/games/${gameId}`,
+        `${apiUrl}/api/games/${gameId}`,
         {
           method: 'GET',
           headers: {
@@ -83,15 +100,17 @@ function Library() {
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <ScrollView style={gameInfoStyles.scrollView}>
-            <Text style={generalStyles.titleTextView}>Biblioteca</Text>
+          <Text style={generalStyles.titleTextView}>Biblioteca</Text>
           <View style={mainMenuStyles.gameList}>
             {games.length > 0 ? (
               games
-                .filter(game => game.photos && game.photos.length > 0 && game.title) // Filtra juegos válidos
+                .filter(
+                  (game) => game.photos && game.photos.length > 0 && game.title
+                )
                 .map((game) => (
                   <GameItemLibrary
                     key={game._id}
-                    imageUri={game.photos[0]} // Se asume que al menos hay una foto
+                    imageUri={game.photos[0]}
                     name={game.title}
                     game={game}
                     onPress={() => handleGamePress(game.gameId)}
