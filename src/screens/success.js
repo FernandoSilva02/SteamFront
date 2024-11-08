@@ -10,17 +10,20 @@ const Success = ({ navigation }) => {
       <Header />
       <Text style={generalStyles.titleTextView}>¡Gracias por tu compra!</Text>
       <Text style={generalStyles.formText}>
-        Tu pago se ha procesado correctamente. Encontrarás tu nuevo contenido en tu biblioteca
+        Tu pago se ha procesado correctamente. Encontrarás tu nuevo contenido en
+        tu biblioteca
       </Text>
       <View style={{ marginTop: 30 }}>
-      <View style={generalStyles.buttonGroup}>
-        <TouchableOpacity
-          style={generalStyles.grayButton}
-          onPress={() => navigation.navigate('Library')}
-        >
-          <Text style={generalStyles.ButtonText}>Ver la biblioteca</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={generalStyles.buttonGroup}>
+          <TouchableOpacity
+            style={generalStyles.grayButton}
+            onPress={() =>
+              navigation.navigate('MainTabsLimited', { screen: 'Library' })
+            }
+          >
+            <Text style={generalStyles.ButtonText}>Ver la biblioteca</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
