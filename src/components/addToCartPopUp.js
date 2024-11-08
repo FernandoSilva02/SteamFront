@@ -15,8 +15,9 @@ const AddToCartPopup = ({ visible, onClose, game }) => {
   const navigation = useNavigation();
 
   const handleViewCart = () => {
-    navigation.navigate('Cart', {
-      cartItems: [game],
+    navigation.navigate('MainTabsLimited', {
+      screen: 'Cart',
+      params: { cartItems: [game] },
     });
   };
 
