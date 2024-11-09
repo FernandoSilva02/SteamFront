@@ -24,7 +24,6 @@ const PaymentScreen = () => {
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState(null);
   const [cardType, setCardType] = useState('');
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -110,7 +109,7 @@ const PaymentScreen = () => {
       const gameIds = cartItems.map((item) => item._id);
 
       const response = await fetch(
-        `${apiUrl}/api/payment-cards/process`,
+        `https://prod.supersteam.pro/api/payment-cards/process`,
         {
           method: 'POST',
           headers: {
@@ -152,7 +151,7 @@ const PaymentScreen = () => {
       ]);
 
       const saveGameToLibraryResponse = await fetch(
-        `${apiUrl}/api/games/add-to-library`,
+        `https://prod.supersteam.pro//api/games/add-to-library`,
         {
           method: 'POST',
           headers: {

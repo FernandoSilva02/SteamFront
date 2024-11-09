@@ -23,9 +23,8 @@ const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-
   const handleLogin = async () => {
+    console.log('API URL:', EXPO_PUBLIC_API_URL);
     if (!validateEmail(email)) {
       setAlertMessage('Por favor ingresa un correo electrónico válido.');
       return;
@@ -38,21 +37,26 @@ const LoginScreen = () => {
   
     try {
       const userData = { email, password };
-      const response = await fetch(`${apiUrl}/api/users/login`, {
+      const response = await fetch(`https://prod.supersteam.pro/api/users/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
       });
   
-      const result = await response.json();
-      console.log('Response:', result); // Agregado para depuración
+      let result;
+      try {
+        result = await response.json();
+      } catch (jsonError) {
+        console.error('No se pudo parsear la respuesta JSON:', jsonError);
+        setAlertMessage('Error en el servidor. Intenta más tarde.');
+        return;
+      }
   
       setAlertMessage(result.msg);
   
       if (response.ok) {
         await AsyncStorage.setItem('token', result.token);
   
-        // Manejo de navegación con try-catch
         try {
           navigation.dispatch(
             CommonActions.reset({
@@ -68,10 +72,11 @@ const LoginScreen = () => {
         setAlertMessage(result.msg || 'Hubo un problema con el login');
       }
     } catch (error) {
-      console.error('Error en el login:', error); // Agregado para depuración
+      console.error('Error en el login:', error);
       setAlertMessage('Error de conexión, por favor intenta de nuevo');
     }
   };
+  
   
   
 
