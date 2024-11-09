@@ -15,7 +15,6 @@ const MainMenu = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -36,7 +35,7 @@ const MainMenu = () => {
     const fetchCategories = async () => {
       try {
         const response = await fetch(
-          `${apiUrl}/api/categories/`,
+          `https://prod.supersteam.pro/api/categories/`,
           {
             method: 'GET',
             headers: {
@@ -68,7 +67,7 @@ const MainMenu = () => {
           ? `?category=${selectedCategory}`
           : '';
         const response = await fetch(
-          `${apiUrl}/api/games/${categoryQuery}`
+          `https://prod.supersteam.pro/api/games/${categoryQuery}`
         );
         const data = await response.json();
         console.log('Games fetched:', data); // Para depurar
