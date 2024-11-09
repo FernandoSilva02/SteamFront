@@ -13,7 +13,6 @@ function Library() {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(null);
   const navigation = useNavigation();
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -34,7 +33,7 @@ function Library() {
 
     const fetchLibrary = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/library/`, {
+        const response = await fetch(`https://prod.supersteam.pro/api/library/`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -63,7 +62,7 @@ function Library() {
   const fetchGameDetails = async (gameId) => {
     try {
       const response = await fetch(
-        `${apiUrl}/api/games/${gameId}`,
+        `https://prod.supersteam.pro/api/games/${gameId}`,
         {
           method: 'GET',
           headers: {

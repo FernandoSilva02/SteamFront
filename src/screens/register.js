@@ -27,8 +27,6 @@ const RegisterScreen = () => {
   const [password, setPassword] = useState('');
   const [show, setShow] = useState(false);
 
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || birthDate;
     setShow(false);
@@ -70,7 +68,7 @@ const RegisterScreen = () => {
         password,
       };
 
-      const response = await fetch(`${apiUrl}/api/users`, {
+      const response = await fetch(`https://prod.supersteam.pro/api/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

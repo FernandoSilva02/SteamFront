@@ -31,7 +31,7 @@
       "favicon": "./src/assets/icon.png"
     },
     "extra": {
-      "apiUrl": "http://192.168.1.11:3000"
+      "apiUrl": "https://prod.supersteam.pro/"
     }
   }
 }
