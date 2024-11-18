@@ -151,7 +151,7 @@ const PaymentScreen = () => {
       ]);
 
       const saveGameToLibraryResponse = await fetch(
-        `https://prod.supersteam.pro//api/games/add-to-library`,
+        `https://prod.supersteam.pro/api/games/add-to-library`,
         {
           method: 'POST',
           headers: {
