@@ -24,25 +24,32 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    console.log('API URL:', EXPO_PUBLIC_API_URL);
+    const API_URL = 'https://prod.supersteam.pro'; // Define aquí la URL de tu API
+    console.log('API URL:', API_URL);
+
     if (!validateEmail(email)) {
       setAlertMessage('Por favor ingresa un correo electrónico válido.');
       return;
     }
-  
+
     if (!validatePassword(password)) {
-      setAlertMessage('La contraseña debe tener al menos 12 caracteres, una letra mayúscula, una letra minúscula, un número, y un carácter especial.');
+      setAlertMessage(
+        'La contraseña debe tener al menos 12 caracteres, una letra mayúscula, una letra minúscula, un número, y un carácter especial.'
+      );
       return;
     }
-  
+
     try {
       const userData = { email, password };
-      const response = await fetch(`https://prod.supersteam.pro/api/users/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData),
-      });
-  
+      const response = await fetch(
+        `https://prod.supersteam.pro/api/users/login`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(userData),
+        }
+      );
+
       let result;
       try {
         result = await response.json();
@@ -51,12 +58,12 @@ const LoginScreen = () => {
         setAlertMessage('Error en el servidor. Intenta más tarde.');
         return;
       }
-  
+
       setAlertMessage(result.msg);
-  
+
       if (response.ok) {
         await AsyncStorage.setItem('token', result.token);
-  
+
         try {
           navigation.dispatch(
             CommonActions.reset({
@@ -76,9 +83,6 @@ const LoginScreen = () => {
       setAlertMessage('Error de conexión, por favor intenta de nuevo');
     }
   };
-  
-  
-  
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

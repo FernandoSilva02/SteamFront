@@ -16,6 +16,7 @@ import { StatusBar } from 'expo-status-bar';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import LoginScreen from './login';
+import { Picker } from '@react-native-picker/picker';
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
@@ -26,12 +27,25 @@ const RegisterScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [show, setShow] = useState(false);
+  const [country, setCountry] = useState('');
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || birthDate;
     setShow(false);
     setBirthDate(currentDate);
   };
+
+  const countries = [
+    { id: '66f1a9e17ca61abcec3864ff', name: 'Colombia' },
+    { id: '66f1aca67ca61abcec386502', name: 'United States' },
+    { id: '66f1acb57ca61abcec386505', name: 'Mexico' },
+    { id: '66f1acbf7ca61abcec386508', name: 'Canada' },
+    { id: '66f1acc67ca61abcec38650b', name: 'Spain' },
+    { id: '66f1accd7ca61abcec38650e', name: 'Germany' },
+    { id: '66f1acfa7ca61abcec386511', name: 'Argentina' },
+    { id: '66f394a922bca955bd0b525e', name: 'Peru' },
+    { id: '670035b0c2d754ae8da0f18e', name: 'Puerto Rico' },
+  ];
 
   const showDatePicker = () => {
     setShow(true);
@@ -59,6 +73,10 @@ const RegisterScreen = () => {
       );
       return;
     }
+    if (!country) {
+      setAlertMessage('Debes seleccionar un país existente.');
+      return;
+    }
 
     try {
       const userData = {
@@ -66,6 +84,7 @@ const RegisterScreen = () => {
         email,
         birthday: birthDate.toISOString().split('T')[0],
         password,
+        country_id: country,
       };
 
       const response = await fetch(`https://prod.supersteam.pro/api/users`, {
@@ -206,6 +225,22 @@ const RegisterScreen = () => {
               <Text style={registerStyles.alertText}>{alertMessage}</Text>
             </Animated.View>
           )}
+          <Text style={generalStyles.formText}>País</Text>
+          <Picker
+            selectedValue={country}
+            onValueChange={(value) => setCountry(value)}
+            style={generalStyles.inputBox}
+          >
+            <Picker.Item label="Selecciona tu país" value="" />
+            {countries.map((country) => (
+              <Picker.Item
+                key={country.id}
+                label={country.name}
+                value={country.id}
+              />
+            ))}
+          </Picker>
+
           <TouchableOpacity
             style={generalStyles.blueButton}
             onPress={handleRegister}
