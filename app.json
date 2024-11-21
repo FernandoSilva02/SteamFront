@@ -25,13 +25,17 @@
       "statusBar": {
         "barStyle": "light-content",
         "backgroundColor": "#1A2A3D"
-      }
+      },
+      "package": "com.fersilva0212.SteamFront"
     },
     "web": {
       "favicon": "./src/assets/icon.png"
     },
     "extra": {
-      "apiUrl": "https://prod.supersteam.pro/"
+      "apiUrl": "https://prod.supersteam.pro/",
+      "eas": {
+        "projectId": "39b13b8f-9784-4e9d-9798-d60f698dd14a"
+      }
     }
   }
 }
